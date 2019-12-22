@@ -1,3 +1,3 @@
 # firesite
 
-Build progressive web apps on firebase.
+Build progressive web apps (PWA) on Google Firebase.
