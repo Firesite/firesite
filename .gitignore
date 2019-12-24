@@ -4,3 +4,4 @@ keys
 .firebaserc
 functions
 config
+.*

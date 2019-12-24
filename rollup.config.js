@@ -18,7 +18,7 @@ export default [
 				preferBuiltins: true
 			}),
 			commonjs({
-				include: /node_modules/,
+				include: [/node_modules/, /.*__sapper__.*/],
 				namedExports: {
 					"node_modules/firebase-tools/lib/index.js": ["deploy"],
 					"node_modules/firebase-functions/lib/index.js": ["config", "runWith"]
@@ -26,13 +26,13 @@ export default [
 			}),
 			json(),
 			terser({
-				exclude: [/package\.json/]
+				exclude: /package\.json/
 			}),
 			generatePackageJson({
 				baseContents: pkg => ({
 					name: `${pkg.name}-functions`,
 					engines: {
-						node: ">=10.0.0 <11.0.0"
+						node: "10"
 					},
 					scripts: {
 						test: "mocha --reporter spec"

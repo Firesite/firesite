@@ -1,8 +1,7 @@
 import * as functions from "firebase-functions";
 import * as firebaseClient from "firebase-tools";
 
-const deployToFirebase = async functionsDirectory => {
-	const { projectId } = JSON.parse(process.env.FIREBASE_CONFIG);
+const deployToFirebase = async (projectId, siteHash, functionsDirectory) => {
 	console.log(`deploying to project ${projectId} from ${functionsDirectory}`);
 	const firebaseToken = functions.config().fb.token || null;
 	if (!firebaseToken) {
@@ -17,7 +16,7 @@ const deployToFirebase = async functionsDirectory => {
 		process.chdir(functionsDirectory);
 		await firebaseClient.deploy({
 			project: projectId,
-			only: "hosting,functions",
+			only: `hosting:${siteHash},functions:${siteHash}`,
 			token: firebaseToken,
 			force: true
 		});

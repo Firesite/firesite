@@ -1,4 +1,13 @@
 {
+	"hosting": {
+		"public": "src/admin/static",
+		"rewrites": [
+			{
+				"source": "**",
+				"function": "ssr"
+			}
+		]
+	},
 	"firestore": {
 		"rules": "firestore.rules",
 		"indexes": "firestore.indexes.json"

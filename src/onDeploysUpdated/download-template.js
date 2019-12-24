@@ -1,4 +1,4 @@
-const degit = require("degit");
+import degit from "degit";
 
 const downloadTemplate = targetDirectory => {
 	const emitter = degit("Firesite/firesite-template", { force: true });
