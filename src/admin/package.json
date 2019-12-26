@@ -1,6 +1,6 @@
 {
-  "name": "TODO",
-  "description": "TODO",
+  "name": "firesite-admin",
+  "description": "Admin panel for Firesite",
   "version": "0.0.1",
   "scripts": {
     "dev": "sapper dev",
@@ -14,7 +14,6 @@
   "dependencies": {
     "compression": "^1.7.1",
     "express": "^4.17.1",
-    "polka": "next",
     "sirv": "^0.4.0"
   },
   "devDependencies": {
@@ -33,5 +32,6 @@
     "rollup-plugin-terser": "^4.0.4",
     "sapper": "^0.27.0",
     "svelte": "^3.0.0"
-  }
+  },
+  "private": true
 }

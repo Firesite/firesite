@@ -1,5 +1,4 @@
 import sirv from "sirv";
-import polka from "polka";
 import express from "express";
 import compression from "compression";
 import * as sapper from "@sapper/server";
