@@ -1,10 +1,10 @@
 import generatePackageJson from "rollup-plugin-generate-package-json";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
-import { terser } from "rollup-plugin-terser";
 import { builtinModules } from "module";
 import json from "@rollup/plugin-json";
 import pkg from "./package.json";
+import adminPkg from "./src/admin/package.json";
 
 export default [
 	{
@@ -18,16 +18,13 @@ export default [
 				preferBuiltins: true
 			}),
 			commonjs({
-				include: [/node_modules/, /.*__sapper__.*/],
+				include: ["**node_modules**"],
 				namedExports: {
 					"node_modules/firebase-tools/lib/index.js": ["deploy"],
 					"node_modules/firebase-functions/lib/index.js": ["config", "runWith"]
 				}
 			}),
 			json(),
-			terser({
-				exclude: /package\.json/
-			}),
 			generatePackageJson({
 				baseContents: pkg => ({
 					name: `${pkg.name}-functions`,
@@ -40,11 +37,15 @@ export default [
 					dependencies: {},
 					private: true
 				}),
-				additionalDependencies: pkg.dependencies
+				additionalDependencies: {
+					...pkg.dependencies,
+					...adminPkg.dependencies
+				}
 			})
 		],
 		external: [
 			...Object.keys(pkg.dependencies),
+			...Object.keys(adminPkg.dependencies),
 			...Object.keys(process.binding("natives")),
 			...builtinModules
 		]
@@ -57,6 +58,7 @@ export default [
 		},
 		external: [
 			...Object.keys(pkg.dependencies),
+			...Object.keys(adminPkg.dependencies),
 			...Object.keys(process.binding("natives")),
 			...builtinModules
 		]

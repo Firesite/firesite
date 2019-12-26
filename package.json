@@ -3,9 +3,11 @@
 	"version": "0.0.1",
 	"description": "A progressive web app builder for firebase",
 	"scripts": {
-		"build": "rollup --config && ncp src/admin/__sapper__ functions/__sapper__",
-		"build:admin": "cd src/admin && npm install && npm run build && cd ../../",
-		"deploy": "run-s functions:clear build:admin build deploy:firebase",
+		"prebuild": "npm run functions:clear",
+		"build": "npm run build:admin && rollup --config && ncp src/admin/__sapper__ functions/__sapper__",
+		"build:admin": "npm install --prefix src/admin && npm run build --prefix src/admin",
+		"postbuild": "npm install --prefix functions",
+		"deploy": "run-s build deploy:firebase",
 		"deploy:firebase": "cd functions && firebase deploy --only functions:onDeploysUpdated,functions:ssr,hosting && cd ..",
 		"functions:clear": "rimraf functions && mkdirp functions",
 		"test": "npm run build && cd functions && npm run test"

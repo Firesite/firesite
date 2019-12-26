@@ -1,3 +1,3 @@
-import { expressServer } from "./__sapper__/build/server/server";
+const { expressServer } = require("./__sapper__/build/server/server");
 
 export default expressServer;
