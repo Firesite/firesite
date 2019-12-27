@@ -1,5 +1,6 @@
 <script>
 	import Nav from '../components/Nav.svelte';
+	import UserObserver from "../components/UserObserver.svelte";
 
 	export let segment;
 </script>
@@ -16,6 +17,7 @@
 </style>
 
 <Nav {segment}/>
+<UserObserver/>
 
 <main>
 	<slot></slot>
