@@ -4,7 +4,7 @@
 	"description": "A progressive web app builder for firebase",
 	"scripts": {
 		"prebuild": "npm run functions:clear",
-		"build": "npm run build:admin && rollup --config && ncp src/admin/__sapper__ functions/__sapper__",
+		"build": "npm run build:admin && rollup --config && ncp src/admin/__sapper__ functions/__sapper__ && ncp src/admin/static functions/static",
 		"build:admin": "npm install --prefix src/admin && npm run build --prefix src/admin",
 		"postbuild": "npm install --prefix functions",
 		"deploy": "run-s build deploy:firebase",

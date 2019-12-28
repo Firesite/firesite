@@ -1,10 +1,7 @@
-import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 
 import onDeploysUpdated from "./onDeploysUpdated/index";
 import expressServer from "./admin/index";
-
-admin.initializeApp();
 
 exports.onDeploysUpdated = functions
 	.runWith({ memory: "2GB", timeoutSeconds: 540 })

@@ -1,6 +1,6 @@
 {
 	"hosting": {
-		"public": "src/admin/static",
+		"public": "functions/static",
 		"rewrites": [
 			{
 				"source": "**",

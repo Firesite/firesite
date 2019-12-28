@@ -1,69 +1,72 @@
 <script>
-	export let segment;
-	import { stores } from "@sapper/app";
-	const { session } = stores();
+  export let segment;
+  import { stores } from "@sapper/app";
+  import UserAccount from "./UserAccount.svelte";
+  const { session } = stores();
 </script>
 
 <style>
-	nav {
-		border-bottom: 1px solid rgba(255, 62, 0, 0.1);
-		font-weight: 300;
-		padding: 0 1em;
-	}
+  nav {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    border-bottom: 1px solid rgba(255, 62, 0, 0.1);
+    font-weight: 300;
+    padding: 0 1em;
+  }
 
-	ul {
-		margin: 0;
-		padding: 0;
-	}
+  nav ul {
+    display: flex;
+    flex-basis: row;
+    list-style: none;
+  }
 
-	/* clearfix */
-	ul::after {
-		content: "";
-		display: block;
-		clear: both;
-	}
+  .left ul {
+    justify-content: flex-start;
+  }
 
-	li {
-		display: block;
-		float: left;
-	}
+  .center ul {
+    justify-content: center;
+  }
 
-	.selected {
-		position: relative;
-		display: inline-block;
-	}
+  .right ul {
+    justify-content: flex-end;
+  }
+
+  li {
+    padding: 0 0.5em;
+  }
+
+  a {
+    text-decoration: none;
+  }
 
 	.selected::after {
-		position: absolute;
-		content: "";
-		width: calc(100% - 1em);
-		height: 2px;
-		background-color: rgb(255, 62, 0);
-		display: block;
-		bottom: -1px;
-	}
-
-	a {
-		text-decoration: none;
-		padding: 1em 0.5em;
-		display: block;
+		content: "A",
+		
 	}
 </style>
 
 <nav>
-	<ul>
-		<li><a class:selected="{segment === undefined}" href=".">home</a></li>
-		<li><a class:selected='{segment === "about"}' href="about">about</a></li>
-
-		<!-- for the blog link, we're using rel=prefetch so that Sapper prefetches
-		     the blog data when we hover over the link or tap it on a touchscreen -->
-		<li>
-			<a rel="prefetch" class:selected='{segment === "blog"}' href="blog"
-				>blog</a
-			>
-		</li>
-		{#if $session.user}
-			 <a href="dashboard">dashboard</a>
-		{/if}
-	</ul>
+  <div class="left">
+    <ul>
+      <li>
+        <a class:selected={segment === undefined} href=".">🔥 Firesite</a>
+      </li>
+      {#if $session.user}
+        <li>
+          <a rel="prefetch" class:selected={segment === 'sites'} href="sites">
+            My Sites
+          </a>
+        </li>
+      {/if}
+    </ul>
+  </div>
+  <div class="center" />
+  <div class="right">
+    <ul>
+      <li>
+        <UserAccount />
+      </li>
+    </ul>
+  </div>
 </nav>
