@@ -1,36 +1,45 @@
 <script context="module">
-
-
-  import { firestore } from "../../../../../../firebase";
-
+  import { site } from "../../../../../../stores";
   export async function preload({ params, query }, session) {
-    const user = session.user;
-    const siteId = params.site_id;
-    const deployId = params.deploy_id;
     const routeName = params.route_name;
-
-    if (!user) return;
-    const { uid } = user;
-
-    const db = await firestore();
-    const siteDocumentRef = db.collection("sites").doc(siteId);
-    const siteDocument = await siteDocumentRef.get();
-    const site = siteDocument.data();
-    const deploys = await siteDocumentRef.collection("deploys").get();
-    console.log("got deploys", deploys.docs);
-    site.deploys = deploys.docs.map(doc => {
-      const deploy = doc.data();
-      deploy.id = doc.id;
-      return deploy;
-    });
-    return { site, siteId, deployId, routeName };
+    const deployId = params.deploy_id;
+    return { routeName, deployId };
   }
 </script>
 
 <script>
-  export let site, siteId, deployId, routeName;
+  export let routeName, deployId;
+  let fileContents;
+  let hasDeploys = false;
+  let deploy;
+  let route = "No Route...";
+
+  $: deploy = $site.deploys
+    ? $site.deploys.find(el => el.id === deployId)
+    : null;
+
+  $: [fileName, route] = deploy
+    ? Object.entries(deploy.routes).find(el => {
+        const fileName = el[0].match(/^([^.]+)/)[0];
+        return fileName === routeName;
+      })
+    : "No Route";
 </script>
 
-<p>{siteId}: {deployId}: {routeName}</p>
+<style>
+  .RouteName {
+    font-size: 0.8em;
+    color: #aaa;
+  }
+</style>
 
-<p>{JSON.stringify(site)}</p>
+{#if deploy && route}
+  {#if route}
+    <div class="BoxInsetLg">
+      <span class="RouteName">{routeName}</span>
+      <div contenteditable="true">
+        {@html route.content}
+      </div>
+    </div>
+  {/if}
+{/if}

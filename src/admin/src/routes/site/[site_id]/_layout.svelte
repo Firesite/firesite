@@ -1,13 +1,13 @@
 <script context="module">
-  export async function preload({params}, session) {
-    const siteId = params.site_id;
-    return { siteId }
+  import { siteId, site } from "../../../stores";
+  export async function preload({ params }) {
+    siteId.set(params.site_id);
   }
 </script>
 
-<script>
-  export let siteId;
-</script>
-
-<p>{siteId}</p>
-<slot />
+<div class="BoxLg">
+  {#if $site}
+    <h1>{$site.name}</h1>
+    <slot />
+  {/if}
+</div>

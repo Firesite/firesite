@@ -6,9 +6,9 @@
 
 <style>
   .UserProfilePhoto {
-    width: 24px;
-    height: 24px;
-    border-radius: 12px;
+    height: 36px;
+    width: 36px;
+    padding: 0;
     overflow: hidden;
   }
 
@@ -19,7 +19,7 @@
 </style>
 
 {#if $session.user}
-  <div class="UserProfilePhoto">
+  <div class="UserProfilePhoto BoxLg">
     <img src={$session.user.photoURL} alt="Profile Photo" />
   </div>
 {/if}

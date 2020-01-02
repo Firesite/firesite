@@ -6,6 +6,8 @@ window.auth = app.auth();
 window.db = app.firestore();
 window.storage = app.storage();
 
+window.firestore = app.firestore;
+
 sapper.start({
 	target: document.querySelector("#sapper")
 });

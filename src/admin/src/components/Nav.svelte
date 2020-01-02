@@ -1,5 +1,6 @@
 <script>
   export let segment;
+  import Logo from "./Logo.svelte";
   import { stores } from "@sapper/app";
   import UserAccount from "./UserAccount.svelte";
   const { session } = stores();
@@ -9,9 +10,9 @@
   nav {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
-    border-bottom: 1px solid rgba(255, 62, 0, 0.1);
     font-weight: 300;
     padding: 0 1em;
+    align-items: center;
   }
 
   nav ul {
@@ -33,35 +34,53 @@
   }
 
   li {
-    padding: 0 0.5em;
+    padding: 1em 2em;
+    display: grid;
+    align-content: center;
   }
 
   a {
     text-decoration: none;
   }
 
-	.selected::after {
-		content: "A",
-		
-	}
+  .selected::after {
+    content: "A";
+  }
+
+  .Logo {
+    display: flex;
+    align-items: center;
+  }
+
+  .TitleText {
+    font-size: 3em;
+    color: #828282;
+    padding-left: 0.25em;
+  }
 </style>
 
 <nav>
   <div class="left">
     <ul>
       <li>
-        <a class:selected={segment === undefined} href=".">🔥 Firesite</a>
-      </li>
-      {#if $session.user}
-        <li>
-          <a rel="prefetch" class:selected={segment === 'sites'} href="sites">
-            My Sites
+        <span class="Logo">
+          <Logo height="64" />
+          <a class="TitleText" class:selected={segment === undefined} href=".">
+            Firesite
           </a>
-        </li>
-      {/if}
+        </span>
+      </li>
     </ul>
   </div>
-  <div class="center" />
+  <div class="center">
+    {#if $session.user}
+      <li class="BoxInsetLg">
+        <a rel="prefetch" class:selected={segment === 'sites'} href="sites">
+          My Sites
+        </a>
+      </li>
+    {/if}
+  </div>
   <div class="right">
     <ul>
       <li>

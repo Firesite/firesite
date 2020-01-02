@@ -1,15 +1,35 @@
 <script context="module">
-  export async function preload({params}, session) {
-    const siteId = params.site_id;
-    const deployId = params.deploy_id;
+  import { site } from "../../../../../stores";
+  import PageSelector from "../../../../../components/PageSelector.svelte";
 
-    return { siteId, deployId }
+  export async function preload({ params }, session) {
+    let deployId = params.deploy_id;
+    return { deployId };
   }
 </script>
 
 <script>
-  export let siteId, deployId;
+  export let deployId;
+  let deploy;
+  $: deploy =
+    $site.deploys && deployId
+      ? $site.deploys.find(el => el.id === deployId)
+      : null;
 </script>
 
-<p>{siteId}: {deployId}</p>
-<slot />
+<style>
+  .PageEditorContainer {
+    display: grid;
+    grid-template-columns: 200px auto;
+    grid-column-gap: 1em;
+  }
+</style>
+
+<div class="PageEditorContainer">
+  <div>
+    <PageSelector {deploy} />
+  </div>
+  <div>
+    <slot />
+  </div>
+</div>

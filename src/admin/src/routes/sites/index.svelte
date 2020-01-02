@@ -34,7 +34,7 @@
     width: 100%;
     margin: auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: 1fr 1fr 1fr;
     column-gap: 1em;
     row-gap: 1em;
   }
@@ -47,7 +47,7 @@
     {#each sites as site}
       <SiteCard {site} />
     {:else}
-      <p>No Sites</p>
+      <p>Loading Sites...</p>
     {/each}
   </div>
 </div>

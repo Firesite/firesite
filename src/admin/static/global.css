@@ -1,12 +1,20 @@
 body {
 	margin: 0;
-	font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+	font-family: "Lexend Deca", Roboto, -apple-system, BlinkMacSystemFont,
+		Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+		sans-serif;
 	font-size: 14px;
 	line-height: 1.5;
 	color: #333;
+	background-color: #e9eef3;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	margin: 0 0 0.5em 0;
 	font-weight: 400;
 	line-height: 1.2;
@@ -14,6 +22,7 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
 	font-size: 2em;
+	color: #0f4c81;
 }
 
 a {
@@ -29,8 +38,36 @@ code {
 	border-radius: 2px;
 }
 
-@media (min-width: 400px) {
-	body {
-		font-size: 16px;
-	}
+.BoxLg {
+	padding: 1em;
+	border-radius: 12px;
+	box-shadow: 5px 3px 10px rgba(43, 48, 58, 0.15),
+		-5px -3px 10px rgba(255, 248, 240, 0.95);
+}
+
+.BoxLgDark {
+	background-color: #2b303a;
+	padding: 1em;
+	border-radius: 12px;
+	box-shadow: 5px 3px 10px rgba(43, 48, 58, 0.15),
+		-5px -3px 10px rgba(255, 248, 240, 0.95);
+}
+
+.BoxLgGrey {
+	background-color: #7c7c7c;
+	padding: 1em;
+	border-radius: 12px;
+	box-shadow: 5px 3px 10px rgba(43, 48, 58, 0.15),
+		-5px -3px 10px rgba(255, 248, 240, 0.95);
+}
+
+.TextDark {
+	color: EEE7DF;
+}
+
+.BoxInsetLg {
+	padding: 1em;
+	border-radius: 12px;
+	box-shadow: inset 5px 3px 10px rgba(43, 48, 58, 0.15),
+		inset -5px -3px 10px rgba(255, 248, 240, 0.95);
 }

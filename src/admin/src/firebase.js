@@ -28,6 +28,21 @@ export async function firestore() {
 	}
 }
 
+export async function firestoreHelpers() {
+	if (process.browser) {
+		return {
+			arrayUnion: firebase.firestore.FieldValue.arrayUnion,
+			arrayRemove: firebase.firestore.FieldValue.arrayRemove
+		};
+	} else {
+		const firebase = await import("firebase");
+		return {
+			arrayUnion: firebase.firestore.FieldValue.arrayUnion,
+			arrayRemove: firebase.firestore.FieldValue.arrayRemove
+		};
+	}
+}
+
 export async function storage() {
 	if (process.browser) {
 		return window.storage;

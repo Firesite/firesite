@@ -8,7 +8,6 @@
   onMount(async () => {
     const fbAuth = await auth();
     fbAuth.onAuthStateChanged(async authResponse => {
-      console.log(authResponse);
       const user = authResponse;
       if (user) {
         session.update(store => {
@@ -18,7 +17,6 @@
         const idToken = await user.getIdToken();
         await signIn(idToken);
       } else {
-        console.log("Signed out");
         session.update(store => {
           store.user = null;
           return store;
@@ -41,12 +39,9 @@
 
     await signOut();
     const csrfToken = generateCsrfToken();
-		console.log("document", document);
-		let expires = new Date();
-		expires.setSeconds(expires.getSeconds() + 120);
-		console.log("expires", expires);
+    let expires = new Date();
+    expires.setSeconds(expires.getSeconds() + 120);
     document.cookie = `__session=${csrfToken};path=/;expires=${expires.toUTCString()}`;
-    console.log("Signing in with Cookie ", document.cookie);
     const response = await fetch("/auth/sign-in", {
       method: "POST",
       headers: {
