@@ -9,7 +9,6 @@
 {#if $page}
   <h2>{$page.name}</h2>
   <div class="BoxInsetLg">
-    <p>{JSON.stringify($page)}</p>
     <PageEditor />
   </div>
 {/if}

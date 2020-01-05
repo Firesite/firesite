@@ -44,7 +44,7 @@ const createPageStore = (site, slug) => {
 	const { subscribe, set } = writable();
 	let $site, $slug, $page;
 	const setPage = ($site, $slug) => {
-		if (!$site || !$slug) return;
+		if (!$site || !$slug || !Array.isArray($site.pages)) return;
 		$page = $site.pages.find(page => page.slug === $slug);
 		set($page);
 	};
@@ -57,28 +57,58 @@ const createPageStore = (site, slug) => {
 		if ($slug) setPage($site, $slug);
 	});
 
+	const updatePage = async (oldPage, newPage) => {
+		const db = await firestore();
+		const siteRef = db.collection("sites").doc(get(siteId));
+		const { arrayUnion, arrayRemove } = await firestoreHelpers();
+		await db.runTransaction(async transaction => {
+			console.log("removing", oldPage);
+			await transaction.update(siteRef, {
+				pages: arrayRemove(oldPage)
+			});
+			console.log("adding", newPage);
+			await transaction.update(siteRef, {
+				pages: arrayUnion(newPage)
+			});
+		});
+	};
+
 	return {
 		subscribe,
+		update: async updatedPage => {
+			await updatePage($page, updatedPage);
+		},
 		elements: {
 			add: async element => {
-				const db = await firestore();
-				const { arrayUnion, arrayRemove } = await firestoreHelpers();
-				const siteRef = db.collection("sites").doc(get(siteId));
-
-				let $$page = { ...$page };
-
-				$page.elements = $page.elements
-					? [...$page.elements, element]
+				console.log(`$page = ${$page}`);
+				let oldPage = { ...$page };
+				let newPage = { ...$page };
+				newPage.elements = newPage.elements
+					? [...newPage.elements, element]
 					: [element];
+				await updatePage(oldPage, newPage);
+			},
+			update: async (elementId, content) => {
+				let oldPage = { ...$page };
+				let newPage = { ...$page };
 
-				await db.runTransaction(async transaction => {
-					await transaction.update(siteRef, {
-						pages: arrayUnion($page)
-					});
-					await transaction.update(siteRef, {
-						pages: arrayRemove($$page)
-					});
+				newPage.elements = oldPage.elements.map(element => {
+					return element.id === elementId
+						? { ...element, content }
+						: { ...element };
 				});
+
+				await updatePage(oldPage, newPage);
+			},
+			remove: async elementId => {
+				let oldPage = { ...$page };
+				let newPage = { ...$page };
+
+				newPage.elements = oldPage.elements.filter(element => {
+					return element.id != elementId;
+				});
+
+				await updatePage(oldPage, newPage);
 			}
 		}
 	};
