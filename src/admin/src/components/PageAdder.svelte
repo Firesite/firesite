@@ -1,16 +1,18 @@
 <script>
   import { site } from "../stores";
+  export let path;
   let showInput = false;
-  let inputElement, pageName;
+  let inputElement, title;
 
   const addPage = async () => {
-    let slug = pageName
+    title = title.trim();
+    let key = title
       .toLowerCase()
       .trim()
       .split(" ")
       .join("-");
-    let name = pageName;
-    await site.pages.add({ name, slug });
+    const page = path == "index" ? { key, title } : { key, title, path };
+    await site.pages.add(page);
   };
 
   const handleAddPageClicked = () => {
@@ -27,9 +29,17 @@
   <input
     type="text"
     bind:this={inputElement}
-    bind:value={pageName}
+    bind:value={title}
     on:blur={() => (showInput = false)}
     on:keyup={handleKeyUp} />
 {:else}
-  <button on:click={handleAddPageClicked}>Add Page</button>
+  <button on:click={handleAddPageClicked}>+</button>
 {/if}
+
+<style>
+  button {
+    border: none;
+    padding: 0;
+    text-align: center;
+  }
+</style>

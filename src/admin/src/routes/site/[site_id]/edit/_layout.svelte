@@ -1,4 +1,4 @@
-<script conext="module">
+<script context="module">
   import { site } from "../../../../stores";
   import PageSelector from "../../../../components/PageSelector.svelte";
 </script>
@@ -18,7 +18,11 @@
 
 <div class="EditContainer">
   <div class="EditColumn">
-    <PageSelector pages={$site && $site.pages ? $site.pages : []} />
+    <h2>Pages</h2>
+    <div class="BoxInsetLg">
+      <p>Home</p>
+      <PageSelector page={$site.content} />
+    </div>
   </div>
   <div class="EditColumn">
     <slot />

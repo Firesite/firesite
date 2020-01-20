@@ -1,49 +1,32 @@
 <script>
   import { createEventDispatcher } from "svelte";
   import PageSelectorItem from "./PageSelectorItem.svelte";
+  import PageSelectorDropZone from "./PageSelectorDropZone.svelte";
   import PageAdder from "./PageAdder.svelte";
-  export let pages;
+
+  export let page;
+
+  export let path = null;
+  $: path = path == "index" ? null : path;
 
   const dispatch = createEventDispatcher();
 
   const handleAddPageClicked = async () => {
     dispatch("addPage");
   };
-
-  const handlePageItemUpdated = e => {
-    const page = e.detail;
-    console.log("Updating Page", page);
-  };
-
-  const handlePageItemClicked = e => {
-    const page = e.detail;
-    console.log(page, "clicked");
-  };
 </script>
 
 <style>
-  ul {
-    padding: 0;
-    display: grid;
-    list-style: none;
+  .Page {
   }
 </style>
 
-{#if pages}
-  <h2>Pages</h2>
-  <div class="BoxInsetLg">
-    <ul>
-      {#each pages as page}
-        <li>
-          <PageSelectorItem
-            on:updated={handlePageItemUpdated}
-            on:clicked={handlePageItemClicked}
-            {page} />
-        </li>
-      {/each}
-    </ul>
-    <div class="BottomContainer">
-      <PageAdder />
+{#if page}
+  {#each page.children as child, pos}
+    <div class="Page">
+      <PageSelectorDropZone {page} {path} {pos} dir={'above'} />
+      <PageSelectorItem page={child} {path} />
+      <PageSelectorDropZone {page} {path} {pos} dir={'below'} />
     </div>
-  </div>
+  {/each}
 {/if}
