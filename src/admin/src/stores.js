@@ -1,5 +1,6 @@
 import { firestore, firestoreHelpers } from "./firebase";
 import { writable, get } from "svelte/store";
+import { element } from "svelte/internal";
 
 export const siteId = writable();
 export const slug = writable();
@@ -167,73 +168,86 @@ export const site = createSiteStore(siteId);
 
 const createPageStore = (site, slug) => {
 	const { subscribe, set } = writable();
-	let $site, $slug, $page;
-	const setPage = ($site, $slug) => {
-		if (!$site || !$slug || !Array.isArray($site.pages)) return;
-		$page = $site.pages.find(page => page.slug === $slug);
-		set($page);
-	};
-	site.subscribe($$site => {
-		$site = $$site;
-		if ($site) setPage($site, $slug);
-	});
-	slug.subscribe($$slug => {
-		$slug = $$slug;
-		if ($slug) setPage($site, $slug);
-	});
 
-	const updatePage = async (oldPage, newPage) => {
-		const db = await firestore();
-		const siteRef = db.collection("sites").doc(get(siteId));
-		const { arrayUnion, arrayRemove } = await firestoreHelpers();
-		await db.runTransaction(async transaction => {
-			console.log("removing", oldPage);
-			await transaction.update(siteRef, {
-				pages: arrayRemove(oldPage)
-			});
-			console.log("adding", newPage);
-			await transaction.update(siteRef, {
-				pages: arrayUnion(newPage)
-			});
-		});
+	const setPage = async ($site, $slug) => {
+		if ($site && $slug) {
+			const db = await firestore();
+			console.log("slug", $slug, $site);
+			const unsubscribe = db
+				.collection("sites")
+				.doc($site.id)
+				.collection("pages")
+				.doc($slug)
+				.onSnapshot(snap => {
+					console.log("snap", snap);
+					let $page = snap.data();
+					$page.id = snap.id;
+					console.log("Setting Page", $page);
+					set($page);
+				});
+		}
 	};
 
+	slug.subscribe(async $slug => {
+		const $site = get(site);
+		await setPage($site, $slug);
+	});
+	site.subscribe(async $site => {
+		const $slug = get(slug);
+		await setPage($site, $slug);
+	});
 	return {
 		subscribe,
-		update: async updatedPage => {
-			await updatePage($page, updatedPage);
-		},
 		elements: {
 			add: async element => {
-				console.log(`$page = ${$page}`);
-				let oldPage = { ...$page };
-				let newPage = { ...$page };
-				newPage.elements = newPage.elements
-					? [...newPage.elements, element]
-					: [element];
-				await updatePage(oldPage, newPage);
+				const { arrayUnion } = await firestoreHelpers();
+				let created = new Date(),
+					updated = new Date();
+				const db = await firestore();
+				await db
+					.collection("sites")
+					.doc(get(siteId))
+					.collection("pages")
+					.doc(get(page).id)
+					.update({
+						elements: arrayUnion(element),
+						created,
+						updated
+					});
 			},
-			update: async (elementId, content) => {
-				let oldPage = { ...$page };
-				let newPage = { ...$page };
-
-				newPage.elements = oldPage.elements.map(element => {
-					return element.id === elementId
-						? { ...element, content }
-						: { ...element };
-				});
-
-				await updatePage(oldPage, newPage);
+			remove: async id => {
+				let elements = get(page).elements;
+				if (elements.length) {
+					elements = elements.filter(el => el.id != id);
+				}
+				const updated = new Date();
+				const db = await firestore();
+				await db
+					.collection("sites")
+					.doc(get(siteId))
+					.collection("pages")
+					.doc(get(page).id)
+					.update({
+						elements,
+						updated
+					});
 			},
-			remove: async elementId => {
-				let oldPage = { ...$page };
-				let newPage = { ...$page };
-
-				newPage.elements = oldPage.elements.filter(element => {
-					return element.id != elementId;
+			update: async (id, content) => {
+				let elements = get(page).elements.map(el => {
+					console.log(el, id);
+					return el.id == id ? { ...el, content } : el;
 				});
-
-				await updatePage(oldPage, newPage);
+				console.log("elements", elements);
+				const db = await firestore();
+				await db
+					.collection("sites")
+					.doc(get(siteId))
+					.collection("pages")
+					.doc(get(page).id)
+					.update({
+						elements,
+						updated: new Date()
+					});
 			}
 		}
 	};

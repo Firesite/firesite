@@ -7,7 +7,7 @@
 </script>
 
 {#if $page}
-  <h2>{$page.name}</h2>
+  <h2>{$page.title}</h2>
   <div class="BoxInsetLg">
     <PageEditor />
   </div>

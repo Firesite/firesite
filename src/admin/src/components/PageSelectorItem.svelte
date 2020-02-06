@@ -44,7 +44,8 @@
   };
 
   const handleSiteNameClicked = () => {
-    goto(`site/${get(siteId)}/edit`);
+    console.log("kik");
+    goto(`site/${get(siteId)}/edit/${page.ref.id}`);
   };
   const handleInputBlurred = () => {
     editing = false;
