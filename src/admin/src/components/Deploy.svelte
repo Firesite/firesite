@@ -1,35 +1,36 @@
 <script>
   import { firestore } from "../firebase";
   export let site;
+  let db;
+
+  const createRoute = async (route, deploy) => {
+    const pageDoc = await route.ref.get();
+    const page = pageDoc.data();
+    let content = "";
+    if (page.elements && page.elements.length) {
+      for (let element of page.elements) {
+        content = `${content} ${element.content.html}`;
+      }
+    } else {
+      content = "Empty";
+    }
+    deploy = { title: route.title, content };
+    if (route.children) {
+      deploy.children = [];
+      for (let child of route.children) {
+        deploy.children = [
+          ...deploy.children,
+          await createRoute(child, deploy)
+        ];
+      }
+    }
+    return deploy;
+  };
 
   const handleDeployClicked = async () => {
-    const routes =
-      site.pages && Array.isArray(site.pages)
-        ? site.pages.map(page => {
-            let content = "";
-            for (const element of page.elements) {
-              content += element.content.html;
-            }
-            const parent = page.parent || "";
-            return {
-              slug: page.slug,
-              name: page.name,
-              parent,
-              content
-            };
-          })
-        : [];
-
-    let deploy = { routes, status: 1 };
-    console.log("deploying", deploy);
-    if (deploy.routes.length > 0) {
-      const db = await firestore();
-      await db
-        .collection("sites")
-        .doc(site.id)
-        .collection("deploys")
-        .add(deploy);
-    }
+    db = await firestore();
+    let deploy = await createRoute(site.content, {});
+    console.log("deploy", deploy);
   };
 </script>
 
